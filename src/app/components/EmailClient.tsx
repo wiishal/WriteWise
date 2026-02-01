@@ -8,10 +8,12 @@ import RenderEmailTextArea from "./RenderEmailTextArea";
 import { logUserIdController } from "@/controllers/controller.user";
 
 export default function EmailClient() {
+
   const searchParams = useSearchParams();
   const level = Number(searchParams.get("level") || "1");
 
   const { isLoaded, isSignedIn, user } = useUser();
+  
   useEffect(() => {
     if (!isSignedIn) return;
     logUserIdController();

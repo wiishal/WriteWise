@@ -8,6 +8,7 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const level = Number(searchParams.get("level") ?? "1");
+  
   if (Number.isNaN(level)) {
     throw new AppError("Invalid level parameter", 400, "INVALID_QUERY_PARAM");
   }

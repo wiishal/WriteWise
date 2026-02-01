@@ -5,10 +5,13 @@ export default function EmailAnalysisCard({
 }: {
   analysis: EmailAnalysis;
 }) {
+
+
+
   return (
     <div className="border rounded-xl p-6 bg-accent space-y-5 shadow-sm">
       <h2 className="text-xl font-semibold">Email Analysis</h2>
-
+      <button>Save</button>
       <div className="grid grid-cols-2 gap-4">
         <div className="border rounded-lg p-4 text-center">
           <p className="text-sm text-muted-foreground">Clarity</p>

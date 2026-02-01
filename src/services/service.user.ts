@@ -23,3 +23,15 @@ export async function fetchUserProgress() {
     throw error;
   }
 }
+
+export async function fetchUserWritingProgress() {
+  try {
+    const res = await axios.get("/api/user/progress");
+    return res.data;
+  } catch (error:any) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data;
+    }
+    throw error;
+  }
+}

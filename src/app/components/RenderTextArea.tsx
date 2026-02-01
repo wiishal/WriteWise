@@ -8,15 +8,25 @@ import { Analysis, UserWriting, WritingAnalysis } from "@/types/type";
 type WritingPurpose = "explain" | "persuade" | "reflect" | "request";
 
 export default function RenderTextArea() {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false); // only determines analysis state
   const [error, setError] = useState<string | null>(null);
+
   const [subject, setSubject] = useState("");
-  const [text, setText] = useState("");
+  const [text, setText] = useState(""); // user writing state
+
   const [purpose, setPurpose] = useState<WritingPurpose>("explain");
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
+  const [analysis, setAnalysis] = useState<Analysis | null>({
+    clarityScore: 1,
+    structureScore: 1,
+    grammerScore: 1,
+    feedback: "string",
+  });
+
   const analysisDivRenderRef = useRef<HTMLDivElement | null>(null);
 
   async function getAnalysisFunc() {
+
     if (!subject.trim() || !text.trim()) return;
 
     const writings: UserWriting & { purpose: WritingPurpose } = {
@@ -25,25 +35,27 @@ export default function RenderTextArea() {
       purpose,
     };
 
-    try {
-      setAnalysis(null);
-      setIsAnalyzing(true);
-      const res = await getAnalysisController(writings);
-      if (!res.success) {
-        setError(res.message || "Analysis failed");
-        return;
-      }
-      const analysis: WritingAnalysis & { subject: string } = {
-        ...res.analysis,
-        subject: subject,
-      };
-      setAnalysis(analysis || null);
-    } catch (error) {
-      setError("Failed to analyze writing");
-      console.error(error);
-    } finally {
+    setAnalysis(null);
+    setError(null);
+    setIsAnalyzing(true);
+
+    const res = await getAnalysisController(writings);
+    if (!res.success) {
+      console.log(res, "error")
+      setError(res.message || "Analysis failed");
       setIsAnalyzing(false);
+      return;
     }
+
+    const analysis: WritingAnalysis & { subject: string,userWritings:string } = {
+      ...res.analysis,
+      subject: subject,
+      userWritings:text
+    };
+
+    setAnalysis(analysis);
+    setIsAnalyzing(false);
+
   }
   const scrollToAnalysisDiv = () => {
     analysisDivRenderRef.current?.scrollIntoView({ behavior: "smooth" });

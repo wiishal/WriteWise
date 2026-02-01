@@ -1,5 +1,5 @@
-import { isLocalLLMActive } from "./checkLocalLLM";
 import { callGemini } from "./callGemini";
+import { isLocalLLMActive } from "./checkLocalLLM";
 import { callLocalLLM } from "./localLLM";
 
 export async function runLLM(prompt: string) {
@@ -11,6 +11,7 @@ export async function runLLM(prompt: string) {
         text: (await callLocalLLM(prompt)).response,
       };
     } catch (err) {
+      console.log(err)
       console.warn("Local LLM failed, falling back to Gemini");
     }
   }

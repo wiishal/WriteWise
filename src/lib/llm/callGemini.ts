@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { AppError } from "./error/error";
+import { AppError } from "../error/error";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,

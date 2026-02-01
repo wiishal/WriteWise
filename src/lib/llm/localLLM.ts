@@ -1,4 +1,4 @@
-import { AppError } from "./error/error";
+import { AppError } from "../error/error";
 
 export async function callLocalLLM(prompt: string) {
   let res: Response;

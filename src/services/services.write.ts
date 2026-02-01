@@ -25,3 +25,4 @@ export async function saveAnalysis(analysis: Analysis) {
   
   }
 }
+// api/writing/progress

@@ -4,26 +4,39 @@ import ShowError from "./ShowError";
 
 import Loading from "./ui/Loading";
 
-
 import { useUser } from "@clerk/nextjs";
 import EmailAnalysisCard from "./EmailAnalysisCard";
-import { EmailAnalysis, EmailAnalysisPayload, EmailTask, EmailTaskWithWriting } from "@/types/type";
-import { getEmailAnalysisController, getEmailTasksController } from "@/controllers/controller.email";
+import {
+  EmailAnalysis,
+  EmailAnalysisPayload,
+  EmailTask,
+  EmailTaskWithWriting,
+} from "@/types/type";
+import {
+  getEmailAnalysisController,
+  getEmailTasksController,
+} from "@/controllers/controller.email";
 import { updateEmailLevel } from "@/services/service.email";
 
 export default function RenderEmailTextArea({ level }: { level: number }) {
+
   const router = useRouter();
   const { isSignedIn } = useUser();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [emailTask, setEmailTasks] = useState<EmailTaskWithWriting[]>([]);
-  const [emailIndex, setEmailIndex] = useState<number>(0);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true); // whole page state
+  const [isAnalyzing, setIsAnalyzing] = useState(false); //only for analysis
+
+  const [error, setError] = useState<string | null>(null); 
+  const [showEmailExample, setShowEmailExample] = useState(false); 
+
+  const [emailTask, setEmailTasks] = useState<EmailTaskWithWriting[]>([]); // array of tasks
+  const [emailIndex, setEmailIndex] = useState<number>(0); // index determines which task it is on
+
   const [analysis, setAnalysis] = useState<EmailAnalysis | null>(null);
   const analysisDivRenderRef = useRef<HTMLDivElement | null>(null);
-  const [showEmailExample, setShowEmailExample] = useState(false);
 
   async function getAnalysisFunc() {
+
     const current = emailTask[emailIndex];
     if (!current?.writing.trim()) return;
 
@@ -35,29 +48,29 @@ export default function RenderEmailTextArea({ level }: { level: number }) {
       writing: current.writing,
     };
 
-    try {
-      setIsAnalyzing(true);
+    setIsAnalyzing(true);
+    setError(null)
 
-      const res = await getEmailAnalysisController(emailData);
-      if (!res.success) {
-        setError(res.message);
-        return;
-      }
-      setAnalysis(res.analysis);
-    } catch (error) {
-      setError("Email Analysis failed");
-    } finally {
+    const res = await getEmailAnalysisController(emailData);
+    if (!res.success) {
+      setError(res.message);
       setIsAnalyzing(false);
+      return;
     }
+    setAnalysis(res.analysis);
+    setIsAnalyzing(false);
   }
 
+
   async function getEmailTasksFunc() {
+
     const res = await getEmailTasksController(level);
     if (!res.success || !res.tasks) {
       setError(res.message);
       setIsLoading(false);
       return;
     }
+
     const withWriting = res.tasks.map((task: EmailTask) => ({
       ...task,
       writing: "",
@@ -86,9 +99,11 @@ export default function RenderEmailTextArea({ level }: { level: number }) {
       );
     },
     [emailIndex],
+
   );
 
   const fetchNextLevelEmailTasks = async () => {
+
     if (!isSignedIn) {
       router.push(`/email?level=2`);
       return;
@@ -101,20 +116,23 @@ export default function RenderEmailTextArea({ level }: { level: number }) {
     }
 
     router.push(`/email?level=${level + 1}`);
+
   };
 
   useEffect(() => {
+
     setEmailIndex(0);
     getEmailTasksFunc();
+
   }, [level]);
 
   useEffect(() => {
-    console.log("useeffect triggerd")
-    if (!analysis) return;
+
     analysisDivRenderRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+
   }, [analysis]);
 
   if (isLoading) return <Loading />;

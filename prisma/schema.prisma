@@ -48,6 +48,7 @@ model WritingAnalysis {
   grammarScore   Int
 
   feedback String?
+  userWriting String?
 
   createdAt DateTime @default(now())
 

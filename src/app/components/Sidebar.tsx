@@ -27,6 +27,7 @@ export default function Sidebar(): JSX.Element {
       <div className="flex flex-row items-center justify-center p-4 border text-center">
         <h1 className="text-small font-medium text-blue-700 ">Writewise</h1>
       </div>
+
       <div className=" border-amber-400 p-4 text-sm flex flex-col align-middle justify-between h-full">
         <ul className="flex flex-col">
           <li className=" p-3">
@@ -52,6 +53,7 @@ export default function Sidebar(): JSX.Element {
               <p>Quick Writing</p>
             </Link>
           </li>
+
           <li className="p-3">
             <Link
               className="flex flex-row items-center gap-3"
@@ -77,7 +79,7 @@ export default function Sidebar(): JSX.Element {
           </li>
           <li className=" p-3">
             <Link
-              href="/discover/process"
+              href="/process"
               className="flex flex-row items-center gap-3"
             >
               <svg

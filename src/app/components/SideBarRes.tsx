@@ -6,23 +6,22 @@ import Link from "next/link";
 import { fetchUserProgressController } from "@/controllers/controller.user";
 
 export default function SideBarRes() {
-const { isSignedIn, user } = useUser();
+  const { isSignedIn, user } = useUser();
   const [userProgress, setUserProgress] = useState<UserProgress>();
 
   const fetchUserProgress = async () => {
-      if (!isSignedIn || !user) return;
+    if (!isSignedIn || !user) return;
 
-      const res = await fetchUserProgressController()
-      if(!res.success && !res.userProgress){
-        console.error("Failed to fetch user progress:", res.message);
-      }
-      setUserProgress(res.userProgress);  
+    const res = await fetchUserProgressController();
+    if (!res.success && !res.userProgress) {
+      console.error("Failed to fetch user progress:", res.message);
+    }
+    setUserProgress(res.userProgress);
   };
   useEffect(() => {
     fetchUserProgress();
   }, [isSignedIn, user]);
 
-  
   return (
     <div className=" p-4 w-full flex flex-row-reverse items-center justify-between">
       <div className="flex flex-row text-xl font-medium pl-3 justify-between ">
@@ -43,7 +42,10 @@ const { isSignedIn, user } = useUser();
       </div>
       <ul className=" flex flex-row gap-3">
         <li className="">
-          <Link href="/quickwriting" className="flex flex-row items-center gap-3">
+          <Link
+            href="/quickwriting"
+            className="flex flex-row items-center gap-3"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,7 +63,10 @@ const { isSignedIn, user } = useUser();
           </Link>
         </li>
         <li className="">
-          <Link className="flex flex-row items-center gap-3" href={`/email/?level=${userProgress?.emailLevel || 1}`}>
+          <Link
+            className="flex flex-row items-center gap-3"
+            href={`/email/?level=${userProgress?.emailLevel || 1}`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -79,10 +84,8 @@ const { isSignedIn, user } = useUser();
           </Link>
         </li>{" "}
         <li className="">
-          <Link
-            href="/discover/process"
-            className="flex flex-row items-center gap-3"
-          >
+          <Link href="/process"
+           className="flex flex-row items-center gap-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

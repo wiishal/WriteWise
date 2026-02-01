@@ -1,20 +1,45 @@
 import { saveAnalysisController } from "@/controllers/controller.write";
 import { Analysis } from "@/types/type";
-
+import { useState } from "react";
+import ShowError from "./ShowError";
+import ShowNotification from "./ShowNotification";
 
 export function AnalysisCard({ analysis }: { analysis: Analysis }) {
+  const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [isAnalysing,setIsAnalyzing] = useState<boolean>(false)
   async function saveProcessFunc() {
-    console.log("saving...")
-    const res = await saveAnalysisController(analysis)
-    console.log(res)
+    setIsAnalyzing(true)
+    const payload = {
+      ...analysis,
+      subject: "user provided subject",
+      userWritings: "user writings",
+    };
+    const res = await saveAnalysisController(payload);
+    if (!res.success) {
+      setError(res.message);
+      setIsAnalyzing(false)
+      return;
+    }
+    console.log(res);
+    setNotification(res.message)
+    setIsAnalyzing(false)
   }
   return (
     <div className="border rounded-xl p-6 bg-accent space-y-4 shadow-sm">
-
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Writing Analysis</h2>
-        <button onClick={saveProcessFunc} className="border rounded-sm px-6 py-2 font-medium text-sm disabled:opacity-50 cursor-pointer hover:bg-accent hover:text-primary transition bg-accent-foreground text-accent">
-          Save
+        <div className="flex justify-between items-center gap-4">
+          <h2 className="text-xl font-semibold">Writing Analysis</h2>
+          {error && <ShowError error={error} closeErrorPopUp={setError} />}
+          {notification && (
+            <ShowNotification message={notification} closeNotificationPopUp={setNotification} />
+          )}
+        </div>
+        <button
+          onClick={saveProcessFunc}
+          className="border rounded-sm px-6 py-2 font-medium text-sm disabled:opacity-50 cursor-pointer hover:bg-accent hover:text-primary transition bg-accent-foreground text-accent"
+        >
+          {isAnalysing ? "Saving..." : "Save"}
         </button>
       </div>
 

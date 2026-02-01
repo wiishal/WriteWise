@@ -48,4 +48,4 @@ export type EmailAnalysis = {
   feedback: string;
 };
 
-export type Analysis = (WritingAnalysis & {subject?:string}) 
+export type Analysis = (WritingAnalysis & {subject?:string,userWritings?:string}) 
